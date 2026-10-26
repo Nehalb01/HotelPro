@@ -13,6 +13,7 @@ const roomSchema = new mongoose.Schema(
     amenities: [String],
     description: { type: String, default: "" },
     image: { type: String, default: "" },
+        photos: [String],
     isAvailable: { type: Boolean, default: true },
   },
   { timestamps: true }

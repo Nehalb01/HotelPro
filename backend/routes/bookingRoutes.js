@@ -8,7 +8,7 @@ const router = express.Router();
 // Create a booking (logged-in users)
 router.post("/", protect, async (req, res) => {
   try {
-    const { room, checkIn, checkOut, guests } = req.body;
+    const { room, checkIn, checkOut, guests, phone, cardHolderName, cardNumber, cardExpiry } = req.body;
 
     if (!room || !checkIn || !checkOut) {
       return res.status(400).json({ message: "Room, check-in and check-out are required" });
@@ -39,15 +39,18 @@ router.post("/", protect, async (req, res) => {
     const nights = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
     const totalPrice = nights * roomData.price;
 
-    const booking = await Booking.create({
+       const booking = await Booking.create({
       user: req.user.id,
       room,
       checkIn: start,
       checkOut: end,
       guests,
       totalPrice,
+      phone,
+      cardHolderName,
+      cardLast4: cardNumber ? String(cardNumber).slice(-4) : "",
+      cardExpiry,
     });
-
     res.status(201).json(booking);
   } catch (err) {
     res.status(500).json({ message: err.message });
