@@ -1,0 +1,85 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import api from "../services/api";
+
+function AddRoom() {
+  const navigate = useNavigate();
+  const [form, setForm] = useState({
+    name: "",
+    type: "",
+    price: "",
+    description: "",
+    image: "",
+  });
+  const [error, setError] = useState("");
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    try {
+      await api.post("/rooms", { ...form, price: Number(form.price) });
+      alert("Room added successfully");
+      navigate("/rooms");
+    } catch (err) {
+      setError(err.response?.data?.message || "Could not add room");
+    }
+  };
+
+  return (
+    <div className="container mt-5" style={{ maxWidth: "500px" }}>
+      <h2 className="mb-4">Add Room</h2>
+      {error && <div className="alert alert-danger">{error}</div>}
+      <form onSubmit={handleSubmit}>
+        <input
+          className="form-control mb-3"
+          name="name"
+          placeholder="Room name"
+          value={form.name}
+          onChange={handleChange}
+          required
+        />
+        <input
+          className="form-control mb-3"
+          name="type"
+          placeholder="Type (e.g. Deluxe, Suite)"
+          value={form.type}
+          onChange={handleChange}
+          required
+        />
+        <input
+          className="form-control mb-3"
+          type="number"
+          name="price"
+          placeholder="Price per night"
+          value={form.price}
+          onChange={handleChange}
+          required
+        />
+        <textarea
+          className="form-control mb-3"
+          name="description"
+          placeholder="Description"
+          rows="3"
+          value={form.description}
+          onChange={handleChange}
+        />
+        <input
+          className="form-control mb-3"
+          name="image"
+          placeholder="Image URL (optional)"
+          value={form.image}
+          onChange={handleChange}
+        />
+        <button className="btn btn-primary w-100" type="submit">
+          Add Room
+        </button>
+      </form>
+    </div>
+  );
+}
+
+export default AddRoom;
