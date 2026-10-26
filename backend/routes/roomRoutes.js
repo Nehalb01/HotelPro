@@ -5,10 +5,45 @@ const { protect, adminOnly } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
-// Get all rooms (public)
+// Get all rooms (public), with optional filters:
+// ?search=&type=&minPrice=&maxPrice=&checkIn=&checkOut=
 router.get("/", async (req, res) => {
   try {
-    const rooms = await Room.find().sort({ roomNumber: 1 });
+    const { search, type, minPrice, maxPrice, checkIn, checkOut } = req.query;
+    const filter = {};
+
+    if (type) filter.type = type;
+
+    if (minPrice || maxPrice) {
+      filter.price = {};
+      if (minPrice) filter.price.$gte = Number(minPrice);
+      if (maxPrice) filter.price.$lte = Number(maxPrice);
+    }
+
+    if (search) {
+      const escaped = search.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const rx = new RegExp(escaped, "i");
+      filter.$or = [{ name: rx }, { roomNumber: rx }, { description: rx }];
+    }
+
+    // Availability: hide rooms that have an overlapping active booking
+    if (checkIn && checkOut) {
+      const start = new Date(checkIn);
+      const end = new Date(checkOut);
+      if (isNaN(start) || isNaN(end) || end <= start) {
+        return res
+          .status(400)
+          .json({ message: "Check-out must be after check-in" });
+      }
+      const bookedRoomIds = await Booking.find({
+        status: { $in: ["booked", "checked-in"] },
+        checkIn: { $lt: end },
+        checkOut: { $gt: start },
+      }).distinct("room");
+      filter._id = { $nin: bookedRoomIds };
+    }
+
+    const rooms = await Room.find(filter).sort({ roomNumber: 1 });
     res.json(rooms);
   } catch (err) {
     res.status(500).json({ message: err.message });
