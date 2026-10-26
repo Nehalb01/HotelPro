@@ -115,4 +115,20 @@ router.put("/:id/cancel", protect, async (req, res) => {
   }
 });
 
+
+// Booked date ranges for one room (logged-in user)
+router.get("/room/:roomId/booked", protect, async (req, res) => {
+  try {
+    const bookings = await Booking.find({
+      room: req.params.roomId,
+      status: { $in: ["booked", "checked-in"] },
+      checkOut: { $gt: new Date() },
+    })
+      .select("checkIn checkOut")
+      .sort({ checkIn: 1 });
+    res.json(bookings);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
 module.exports = router;
