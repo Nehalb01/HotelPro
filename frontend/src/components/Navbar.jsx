@@ -14,14 +14,18 @@ function Navbar() {
   return (
     <nav className="navbar navbar-expand navbar-dark bg-dark px-3">
       <Link className="navbar-brand" to="/">HotelPro</Link>
-      <div className="navbar-nav ms-auto">
+      <div className="navbar-nav ms-auto align-items-center">
         <Link className="nav-link" to="/">Home</Link>
         <Link className="nav-link" to="/rooms">Rooms</Link>
-{user?.role === "admin" && (
-  <Link className="nav-link" to="/admin/add-room">Add Room</Link>
-)}
+        {user?.role === "admin" && (
+          <>
+            <Link className="nav-link" to="/admin">Admin</Link>
+            <Link className="nav-link" to="/admin/add-room">Add Room</Link>
+          </>
+        )}
         {token ? (
           <>
+            <Link className="nav-link" to="/my-bookings">My Bookings</Link>
             <Link className="nav-link" to="/dashboard">Dashboard</Link>
             <button className="btn btn-outline-light btn-sm ms-2" onClick={handleLogout}>
               Logout

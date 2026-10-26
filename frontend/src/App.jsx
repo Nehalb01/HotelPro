@@ -7,6 +7,11 @@ import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import Rooms from "./pages/Rooms";
 import AddRoom from "./pages/AddRoom";
+import EditRoom from "./pages/EditRoom";
+import BookRoom from "./pages/BookRoom";
+import MyBookings from "./pages/MyBookings";
+import AdminDashboard from "./pages/AdminDashboard";
+
 function App() {
   return (
     <>
@@ -15,6 +20,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/rooms" element={<Rooms />} />
         <Route
           path="/dashboard"
           element={
@@ -23,15 +29,46 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route path="/rooms" element={<Rooms />} />
-<Route
-  path="/admin/add-room"
-  element={
-    <ProtectedRoute adminOnly={true}>
-      <AddRoom />
-    </ProtectedRoute>
-  }
-/>
+        <Route
+          path="/book/:id"
+          element={
+            <ProtectedRoute>
+              <BookRoom />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/my-bookings"
+          element={
+            <ProtectedRoute>
+              <MyBookings />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute adminOnly={true}>
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/add-room"
+          element={
+            <ProtectedRoute adminOnly={true}>
+              <AddRoom />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/edit-room/:id"
+          element={
+            <ProtectedRoute adminOnly={true}>
+              <EditRoom />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </>
   );

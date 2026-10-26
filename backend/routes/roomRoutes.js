@@ -1,5 +1,6 @@
 const express = require("express");
 const Room = require("../models/Room");
+const Booking = require("../models/Booking");
 const { protect, adminOnly } = require("../middleware/authMiddleware");
 
 const router = express.Router();
@@ -49,9 +50,18 @@ router.put("/:id", protect, adminOnly, async (req, res) => {
   }
 });
 
-// Delete a room (admin only)
+// Delete a room (admin only, blocked if it has active bookings)
 router.delete("/:id", protect, adminOnly, async (req, res) => {
   try {
+    const active = await Booking.findOne({
+      room: req.params.id,
+      status: { $in: ["booked", "checked-in"] },
+    });
+    if (active) {
+      return res
+        .status(400)
+        .json({ message: "Cannot delete a room that has active bookings" });
+    }
     const room = await Room.findByIdAndDelete(req.params.id);
     if (!room) return res.status(404).json({ message: "Room not found" });
     res.json({ message: "Room deleted" });

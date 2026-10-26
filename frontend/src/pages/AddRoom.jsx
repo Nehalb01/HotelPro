@@ -2,11 +2,14 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 
+const ROOM_TYPES = ["Single", "Double", "Deluxe", "Suite"];
+
 function AddRoom() {
   const navigate = useNavigate();
   const [form, setForm] = useState({
+    roomNumber: "",
     name: "",
-    type: "",
+    type: ROOM_TYPES[0],
     price: "",
     description: "",
     image: "",
@@ -36,20 +39,31 @@ function AddRoom() {
       <form onSubmit={handleSubmit}>
         <input
           className="form-control mb-3"
-          name="name"
-          placeholder="Room name"
-          value={form.name}
+          name="roomNumber"
+          placeholder="Room number (e.g. 101)"
+          value={form.roomNumber}
           onChange={handleChange}
           required
         />
         <input
           className="form-control mb-3"
+          name="name"
+          placeholder="Room name"
+          value={form.name}
+          onChange={handleChange}
+        />
+        <select
+          className="form-select mb-3"
           name="type"
-          placeholder="Type (e.g. Deluxe, Suite)"
           value={form.type}
           onChange={handleChange}
-          required
-        />
+        >
+          {ROOM_TYPES.map((t) => (
+            <option key={t} value={t}>
+              {t}
+            </option>
+          ))}
+        </select>
         <input
           className="form-control mb-3"
           type="number"
