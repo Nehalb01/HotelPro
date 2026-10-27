@@ -15,6 +15,7 @@ const badgeClass = (status) =>
 
 function MyBookings() {
   const [bookings, setBookings] = useState([]);
+  const [tab, setTab] = useState("upcoming");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
 
@@ -47,63 +48,96 @@ function MyBookings() {
 
   if (loading) return <Spinner />;
 
+  const now = new Date();
+  const isUpcoming = (b) =>
+    (b.status === "booked" || b.status === "checked-in") && new Date(b.checkOut) >= now;
+  const list = bookings.filter((b) => (tab === "upcoming" ? isUpcoming(b) : !isUpcoming(b)));
+
   return (
     <>
-      <div className="page-header">
-        <div className="container">
-          <h2>My Bookings</h2>
-          <p>View and manage your reservations</p>
-        </div>
+      <div className="page-header mb-4">
+        <h2>My Bookings</h2>
+        <p>View and manage your hotel bookings.</p>
       </div>
 
-      <div className="container my-4">
-        {error && <div className="alert alert-danger">{error}</div>}
+      <ul className="nav nav-tabs mb-3">
+        {[
+          ["upcoming", "Upcoming"],
+          ["past", "Past"],
+        ].map(([key, label]) => (
+          <li className="nav-item" key={key}>
+            <button
+              className={`nav-link ${tab === key ? "active" : ""}`}
+              onClick={() => setTab(key)}
+            >
+              {label}
+            </button>
+          </li>
+        ))}
+      </ul>
 
-        {bookings.length === 0 && !error && (
-          <div className="text-center my-5">
-            <p className="text-muted">You have no bookings yet.</p>
-            <Link to="/rooms" className="btn btn-brand">
-              Browse Rooms
-            </Link>
-          </div>
-        )}
+      {error && <div className="alert alert-danger">{error}</div>}
 
-        <div className="row">
-          {bookings.map((b) => (
-            <div className="col-lg-4 col-md-6 mb-4" key={b._id}>
-              <div className="card panel-card shadow-sm h-100">
-                <div className="card-body">
-                  <div className="d-flex justify-content-between align-items-start mb-2">
-                    <h5 className="card-title mb-0">
-                      {b.room?.name || `Room ${b.room?.roomNumber || ""}`}
-                    </h5>
-                    <span className={`badge ${badgeClass(b.status)}`}>{b.status}</span>
+      {list.length === 0 && !error && (
+        <div className="text-center my-5">
+          <p className="text-muted">No {tab} bookings.</p>
+          <Link to="/rooms" className="btn btn-primary">
+            Browse Rooms
+          </Link>
+        </div>
+      )}
+
+      {list.map((b) => {
+        const nights = Math.ceil(
+          (new Date(b.checkOut) - new Date(b.checkIn)) / (1000 * 60 * 60 * 24)
+        );
+        return (
+          <div className="panel-card p-3 mb-3" key={b._id}>
+            <div className="row align-items-center g-3">
+              <div className="col-md-2 col-4">
+                {b.room?.image ? (
+                  <img
+                    src={b.room.image}
+                    alt=""
+                    className="w-100 rounded-3"
+                    style={{ height: 80, objectFit: "cover" }}
+                  />
+                ) : (
+                  <div className="room-placeholder rounded-3" style={{ height: 80 }}>
+                    <small>Room</small>
                   </div>
-                  <p className="text-muted small mb-3">{b.room?.type}</p>
-                  <p className="mb-1">
-                    <strong>Check-in:</strong> {new Date(b.checkIn).toLocaleDateString()}
-                  </p>
-                  <p className="mb-1">
-                    <strong>Check-out:</strong> {new Date(b.checkOut).toLocaleDateString()}
-                  </p>
-                  <p className="mb-3">
-                    <strong>Guests:</strong> {b.guests}
-                  </p>
-                  <p className="price-tag mb-3">₹{b.totalPrice}</p>
-                  {b.status === "booked" && (
-                    <button
-                      className="btn btn-outline-danger btn-sm w-100"
-                      onClick={() => cancelBooking(b._id)}
-                    >
-                      Cancel booking
-                    </button>
-                  )}
-                </div>
+                )}
+              </div>
+              <div className="col-md-5 col-8">
+                <h6 className="mb-1">
+                  {b.room?.name || `Room ${b.room?.roomNumber || ""}`}{" "}
+                  <span className={`badge ${badgeClass(b.status)} ms-1`}>{b.status}</span>
+                </h6>
+                <small className="text-muted d-block">{b.room?.type}</small>
+                <small className="text-muted">
+                  {new Date(b.checkIn).toLocaleDateString()} -{" "}
+                  {new Date(b.checkOut).toLocaleDateString()} ({nights} night
+                  {nights > 1 ? "s" : ""})
+                </small>
+              </div>
+              <div className="col-md-2 col-6">
+                <div className="price-tag">₹{b.totalPrice}</div>
+                <small className="text-muted">{b.guests} guest(s)</small>
+              </div>
+              <div className="col-md-3 col-6 text-md-end">
+                {b.status === "booked" && (
+                  <button
+                    className="btn btn-outline-danger btn-sm"
+                    onClick={() => cancelBooking(b._id)}
+                  >
+                    Cancel booking
+                  </button>
+                )}
               </div>
             </div>
-          ))}
-        </div>
-      </div>
+          </div>
+        );
+      })}
     </>
   );
 }

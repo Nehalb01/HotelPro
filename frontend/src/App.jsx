@@ -13,6 +13,8 @@ import EditRoom from "./pages/EditRoom";
 import BookRoom from "./pages/BookRoom";
 import MyBookings from "./pages/MyBookings";
 import AdminDashboard from "./pages/AdminDashboard";
+import RoomDetails from "./pages/RoomDetails";
+import Profile from "./pages/Profile";
 
 function App() {
   return (
@@ -24,6 +26,15 @@ function App() {
         <Route element={<Shell />}>
           <Route path="/" element={<Home />} />
           <Route path="/rooms" element={<Rooms />} />
+          <Route path="/rooms/:id" element={<RoomDetails />} />
+<Route
+  path="/profile"
+  element={
+    <ProtectedRoute>
+      <Profile />
+    </ProtectedRoute>
+  }
+/>
           <Route
             path="/dashboard"
             element={

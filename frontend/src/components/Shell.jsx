@@ -10,6 +10,7 @@ import {
   FaPlusCircle,
   FaBars,
   FaHeadset,
+  FaUser,
 } from "react-icons/fa";
 import Footer from "./Footer";
 
@@ -38,6 +39,9 @@ function PublicLayout() {
             <NavLink className="nav-link px-3" to="/rooms">
               Rooms
             </NavLink>
+            <NavLink className="side-link" to="/profile">
+  <FaUser /> Profile
+</NavLink>
           </div>
           <div className="d-flex gap-2 mt-2 mt-md-0">
             {token ? (

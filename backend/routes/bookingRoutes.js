@@ -8,7 +8,7 @@ const router = express.Router();
 // Create a booking (logged-in user)
 router.post("/", protect, async (req, res) => {
   try {
-    const { room, checkIn, checkOut, guests, phone } = req.body;
+    const { room, checkIn, checkOut, guests, phone, cardHolderName, cardLast4, cardExpiry } = req.body;
 
     const roomDoc = await Room.findById(room);
     if (!roomDoc) return res.status(404).json({ message: "Room not found" });
@@ -40,6 +40,9 @@ router.post("/", protect, async (req, res) => {
       checkOut: end,
       guests: guests || 1,
       phone: phone || "",
+            cardHolderName: cardHolderName || "",
+      cardLast4: cardLast4 || "",
+      cardExpiry: cardExpiry || "",
       totalPrice: nights * roomDoc.price,
     });
 
