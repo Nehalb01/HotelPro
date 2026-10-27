@@ -49,6 +49,14 @@ function Login() {
 
       <div className="auth-main">
         <div className="auth-form">
+          <Link
+  to="/"
+  className="d-lg-none text-decoration-none d-flex align-items-center gap-2 mb-4"
+  style={{ color: "#0f4c3a" }}
+>
+  <FaSpa size={22} />
+  <span className="brand-font fs-4">HotelPro</span>
+</Link>
           <h2 className="mb-1">Login</h2>
           <p className="text-muted mb-4">Enter your details to access your account</p>
 
