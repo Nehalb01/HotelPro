@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom";
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Shell from "./components/Shell";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
@@ -12,18 +13,16 @@ import EditRoom from "./pages/EditRoom";
 import BookRoom from "./pages/BookRoom";
 import MyBookings from "./pages/MyBookings";
 import AdminDashboard from "./pages/AdminDashboard";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   return (
-    <div className="d-flex flex-column min-vh-100">
-      <Navbar />
-      <main className="flex-grow-1">
-        <Routes>
+    <>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+
+        <Route element={<Shell />}>
           <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
           <Route path="/rooms" element={<Rooms />} />
           <Route
             path="/dashboard"
@@ -73,11 +72,10 @@ function App() {
               </ProtectedRoute>
             }
           />
-        </Routes>
-      </main>
-      <Footer />
-       <ToastContainer position="top-right" autoClose={2500} />
-    </div>
+        </Route>
+      </Routes>
+      <ToastContainer position="top-right" autoClose={2500} />
+    </>
   );
 }
 

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import { FaEnvelope, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaEnvelope, FaLock, FaEye, FaEyeSlash, FaSpa } from "react-icons/fa";
 import api from "../services/api";
 
 function Login() {
@@ -33,63 +33,76 @@ function Login() {
   };
 
   return (
-    <div className="auth-wrapper">
-      <div className="auth-card">
-        <div className="text-center mb-4">
-          <h2 className="mb-1">Welcome back</h2>
-          <p className="text-muted mb-0">Login to manage your bookings</p>
+    <div className="auth-split">
+      <div className="auth-side login">
+        <Link to="/" className="text-white text-decoration-none d-flex align-items-center gap-2">
+          <FaSpa size={22} />
+          <span className="brand-font fs-4">HotelPro</span>
+        </Link>
+        <div>
+          <h2 className="mb-2">Welcome Back</h2>
+          <p className="mb-4 opacity-75">
+            Log in to your account and continue your journey with us.
+          </p>
         </div>
+      </div>
 
-        {error && <div className="alert alert-danger py-2">{error}</div>}
+      <div className="auth-main">
+        <div className="auth-form">
+          <h2 className="mb-1">Login</h2>
+          <p className="text-muted mb-4">Enter your details to access your account</p>
 
-        <form onSubmit={handleSubmit}>
-          <label className="form-label">Email</label>
-          <div className="input-group mb-3">
-            <span className="input-group-text">
-              <FaEnvelope />
-            </span>
-            <input
-              className="form-control"
-              type="email"
-              name="email"
-              placeholder="you@example.com"
-              value={form.email}
-              onChange={handleChange}
-              required
-            />
-          </div>
+          {error && <div className="alert alert-danger py-2">{error}</div>}
 
-          <label className="form-label">Password</label>
-          <div className="input-group mb-4">
-            <span className="input-group-text">
-              <FaLock />
-            </span>
-            <input
-              className="form-control"
-              type={showPassword ? "text" : "password"}
-              name="password"
-              placeholder="Your password"
-              value={form.password}
-              onChange={handleChange}
-              required
-            />
-            <button
-              className="btn btn-outline-secondary"
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-            >
-              {showPassword ? <FaEyeSlash /> : <FaEye />}
+          <form onSubmit={handleSubmit}>
+            <label className="form-label fw-medium">Email address</label>
+            <div className="input-group mb-3">
+              <span className="input-group-text">
+                <FaEnvelope />
+              </span>
+              <input
+                className="form-control"
+                type="email"
+                name="email"
+                placeholder="you@example.com"
+                value={form.email}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <label className="form-label fw-medium">Password</label>
+            <div className="input-group mb-4">
+              <span className="input-group-text">
+                <FaLock />
+              </span>
+              <input
+                className="form-control"
+                type={showPassword ? "text" : "password"}
+                name="password"
+                placeholder="Enter your password"
+                value={form.password}
+                onChange={handleChange}
+                required
+              />
+              <button
+                className="btn btn-outline-secondary"
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
+            </div>
+
+            <button className="btn btn-primary w-100 py-2" type="submit" disabled={submitting}>
+              {submitting ? "Logging in..." : "Login"}
             </button>
-          </div>
+          </form>
 
-          <button className="btn btn-primary w-100" type="submit" disabled={submitting}>
-            {submitting ? "Logging in..." : "Login"}
-          </button>
-        </form>
-
-        <p className="text-center mt-4 mb-0">
-          No account? <Link to="/register">Register</Link>
-        </p>
+          <p className="text-center mt-4 mb-0 text-muted">
+            Don't have an account? <Link to="/register">Register</Link>
+          </p>
+        </div>
       </div>
     </div>
   );
