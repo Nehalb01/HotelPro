@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import Spinner from "../components/Spinner";
 import api from "../services/api";
 
 const ROOM_TYPES = ["Single", "Double", "Deluxe", "Suite"];
@@ -66,148 +68,163 @@ function Rooms() {
     setError("");
     try {
       await api.delete(`/rooms/${id}`);
+      toast.success("Room deleted");
       fetchRooms();
     } catch (err) {
       setError(err.response?.data?.message || "Could not delete room");
     }
   };
 
-  if (loading) return <div className="container mt-5">Loading rooms...</div>;
+  if (loading) return <Spinner />;
 
   return (
-    <div className="container mt-5">
-      <h2 className="mb-4">Available Rooms</h2>
-
-      <form className="card card-body shadow-sm mb-4" onSubmit={handleSearch}>
-        <div className="row g-3">
-          <div className="col-md-4">
-            <label className="form-label">Search</label>
-            <input
-              className="form-control"
-              name="search"
-              placeholder="Name, number or description"
-              value={filters.search}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="col-md-2">
-            <label className="form-label">Type</label>
-            <select
-              className="form-select"
-              name="type"
-              value={filters.type}
-              onChange={handleChange}
-            >
-              <option value="">All</option>
-              {ROOM_TYPES.map((t) => (
-                <option key={t} value={t}>
-                  {t}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="col-md-3">
-            <label className="form-label">Min price</label>
-            <input
-              className="form-control"
-              type="number"
-              name="minPrice"
-              value={filters.minPrice}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="col-md-3">
-            <label className="form-label">Max price</label>
-            <input
-              className="form-control"
-              type="number"
-              name="maxPrice"
-              value={filters.maxPrice}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="col-md-3">
-            <label className="form-label">Check-in</label>
-            <input
-              className="form-control"
-              type="date"
-              name="checkIn"
-              min={today}
-              value={filters.checkIn}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="col-md-3">
-            <label className="form-label">Check-out</label>
-            <input
-              className="form-control"
-              type="date"
-              name="checkOut"
-              min={filters.checkIn || today}
-              value={filters.checkOut}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="col-md-6 d-flex align-items-end gap-2">
-            <button className="btn btn-primary" type="submit">
-              Search
-            </button>
-            <button className="btn btn-outline-secondary" type="button" onClick={handleReset}>
-              Reset
-            </button>
-          </div>
+    <>
+      <div className="page-header">
+        <div className="container">
+          <h2>Our Rooms</h2>
+          <p>Find the perfect room for your stay</p>
         </div>
-      </form>
+      </div>
 
-      {error && <div className="alert alert-danger">{error}</div>}
-      {rooms.length === 0 && !error && <p>No rooms match your search.</p>}
-
-      <div className="row">
-        {rooms.map((room) => (
-          <div className="col-md-4 mb-4" key={room._id}>
-            <div className="card h-100 shadow-sm">
-              {room.image && (
-                <img
-                  src={room.image}
-                  className="card-img-top"
-                  alt={room.name || room.roomNumber}
-                  style={{ height: "200px", objectFit: "cover" }}
-                />
-              )}
-              <div className="card-body">
-                <h5 className="card-title">
-                  {room.name || `Room ${room.roomNumber}`}
-                </h5>
-                <p className="text-muted mb-1">
-                  Room {room.roomNumber} · {room.type}
-                </p>
-                <p className="card-text">{room.description}</p>
-                <p className="fw-bold">₹{room.price} / night</p>
-                <Link to={`/book/${room._id}`} className="btn btn-primary w-100 mb-2">
-                  Book Now
-                </Link>
-                {isAdmin && (
-                  <div className="d-flex gap-2">
-                    <Link
-                      to={`/admin/edit-room/${room._id}`}
-                      className="btn btn-outline-secondary btn-sm w-50"
-                    >
-                      Edit
-                    </Link>
-                    <button
-                      className="btn btn-outline-danger btn-sm w-50"
-                      onClick={() => handleDelete(room._id)}
-                    >
-                      Delete
-                    </button>
-                  </div>
-                )}
-              </div>
+      <div className="container my-4">
+        <form className="card panel-card shadow-sm card-body mb-4" onSubmit={handleSearch}>
+          <div className="row g-3">
+            <div className="col-lg-4 col-md-6">
+              <label className="form-label">Search</label>
+              <input
+                className="form-control"
+                name="search"
+                placeholder="Name, number or description"
+                value={filters.search}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="col-lg-2 col-md-6">
+              <label className="form-label">Type</label>
+              <select
+                className="form-select"
+                name="type"
+                value={filters.type}
+                onChange={handleChange}
+              >
+                <option value="">All</option>
+                {ROOM_TYPES.map((t) => (
+                  <option key={t} value={t}>
+                    {t}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="col-lg-3 col-md-6">
+              <label className="form-label">Min price</label>
+              <input
+                className="form-control"
+                type="number"
+                name="minPrice"
+                value={filters.minPrice}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="col-lg-3 col-md-6">
+              <label className="form-label">Max price</label>
+              <input
+                className="form-control"
+                type="number"
+                name="maxPrice"
+                value={filters.maxPrice}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="col-lg-3 col-md-6">
+              <label className="form-label">Check-in</label>
+              <input
+                className="form-control"
+                type="date"
+                name="checkIn"
+                min={today}
+                value={filters.checkIn}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="col-lg-3 col-md-6">
+              <label className="form-label">Check-out</label>
+              <input
+                className="form-control"
+                type="date"
+                name="checkOut"
+                min={filters.checkIn || today}
+                value={filters.checkOut}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="col-lg-6 d-flex align-items-end gap-2">
+              <button className="btn btn-brand px-4" type="submit">
+                Search
+              </button>
+              <button className="btn btn-outline-secondary" type="button" onClick={handleReset}>
+                Reset
+              </button>
             </div>
           </div>
-        ))}
+        </form>
+
+        {error && <div className="alert alert-danger">{error}</div>}
+        {rooms.length === 0 && !error && (
+          <p className="text-center text-muted my-5">No rooms match your search.</p>
+        )}
+
+        <div className="row">
+          {rooms.map((room) => (
+            <div className="col-lg-4 col-md-6 mb-4" key={room._id}>
+              <div className="card room-card h-100 shadow-sm">
+                {room.image ? (
+                  <img
+                    src={room.image}
+                    className="card-img-top"
+                    alt={room.name || room.roomNumber}
+                  />
+                ) : (
+                  <div className="room-placeholder">Room {room.roomNumber}</div>
+                )}
+                <div className="card-body d-flex flex-column">
+                  <div className="d-flex justify-content-between align-items-start mb-1">
+                    <h5 className="card-title mb-0">
+                      {room.name || `Room ${room.roomNumber}`}
+                    </h5>
+                    <span className="badge bg-secondary">{room.type}</span>
+                  </div>
+                  <p className="text-muted small mb-2">Room {room.roomNumber}</p>
+                  <p className="card-text flex-grow-1">{room.description}</p>
+                  <p className="mb-3">
+                    <span className="price-tag">₹{room.price}</span>
+                    <span className="text-muted"> / night</span>
+                  </p>
+                  <Link to={`/book/${room._id}`} className="btn btn-brand w-100">
+                    Book Now
+                  </Link>
+                  {isAdmin && (
+                    <div className="d-flex gap-2 mt-2">
+                      <Link
+                        to={`/admin/edit-room/${room._id}`}
+                        className="btn btn-outline-secondary btn-sm w-50"
+                      >
+                        Edit
+                      </Link>
+                      <button
+                        className="btn btn-outline-danger btn-sm w-50"
+                        onClick={() => handleDelete(room._id)}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

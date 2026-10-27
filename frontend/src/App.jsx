@@ -12,6 +12,8 @@ import EditRoom from "./pages/EditRoom";
 import BookRoom from "./pages/BookRoom";
 import MyBookings from "./pages/MyBookings";
 import AdminDashboard from "./pages/AdminDashboard";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   return (
@@ -74,6 +76,7 @@ function App() {
         </Routes>
       </main>
       <Footer />
+       <ToastContainer position="top-right" autoClose={2500} />
     </div>
   );
 }

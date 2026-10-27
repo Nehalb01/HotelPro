@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import api from "../services/api";
 
 const ROOM_TYPES = ["Single", "Double", "Deluxe", "Suite"];
@@ -15,6 +16,7 @@ function AddRoom() {
     image: "",
   });
   const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -23,12 +25,15 @@ function AddRoom() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setSubmitting(true);
     try {
       await api.post("/rooms", { ...form, price: Number(form.price) });
-      alert("Room added successfully");
+      toast.success("Room added successfully");
       navigate("/rooms");
     } catch (err) {
       setError(err.response?.data?.message || "Could not add room");
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -88,8 +93,8 @@ function AddRoom() {
           value={form.image}
           onChange={handleChange}
         />
-        <button className="btn btn-primary w-100" type="submit">
-          Add Room
+        <button className="btn btn-primary w-100" type="submit" disabled={submitting}>
+          {submitting ? "Adding..." : "Add Room"}
         </button>
       </form>
     </div>

@@ -2,6 +2,7 @@ body {
   background-color: #f8f9fa;
 }
 
+/* Home page */
 .hero {
   background: linear-gradient(135deg, #0d1b2a 0%, #1b3a5c 55%, #2a6f97 100%);
   color: #fff;
@@ -38,6 +39,50 @@ body {
   color: #adb5bd;
 }
 
+/* Login and Register pages */
+.auth-wrapper {
+  min-height: calc(100vh - 56px - 96px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 16px;
+  background: linear-gradient(135deg, #0d1b2a 0%, #1b3a5c 55%, #2a6f97 100%);
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 430px;
+  background: #fff;
+  border-radius: 16px;
+  padding: 36px 32px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+}
+
+.auth-card h2 {
+  font-weight: 700;
+}
+
+.auth-card .input-group-text {
+  background: #f1f3f5;
+  color: #2a6f97;
+}
+
+.auth-card .form-control {
+  padding: 10px 12px;
+}
+
+.auth-card .btn-primary {
+  padding: 10px;
+  font-weight: 600;
+  background: #2a6f97;
+  border-color: #2a6f97;
+}
+
+.auth-card .btn-primary:hover {
+  background: #1b3a5c;
+  border-color: #1b3a5c;
+}
+
 @media (max-width: 576px) {
   .hero {
     padding: 70px 0;
@@ -45,4 +90,83 @@ body {
   .hero h1 {
     font-size: 2.1rem;
   }
+  .auth-card {
+    padding: 28px 20px;
+  }
+}
+
+/* Shared page UI */
+.navbar-brand {
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.page-header {
+  background: linear-gradient(135deg, #0d1b2a 0%, #1b3a5c 55%, #2a6f97 100%);
+  color: #fff;
+  padding: 40px 0;
+}
+
+.page-header h2 {
+  font-weight: 700;
+  margin: 0;
+}
+
+.page-header p {
+  margin: 4px 0 0;
+  opacity: 0.85;
+}
+
+.room-card {
+  border: 0;
+  border-radius: 14px;
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.room-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12) !important;
+}
+
+.room-card img {
+  height: 200px;
+  object-fit: cover;
+}
+
+.price-tag {
+  color: #2a6f97;
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+
+.btn-brand {
+  background: #2a6f97;
+  border-color: #2a6f97;
+  color: #fff;
+  font-weight: 600;
+}
+
+.btn-brand:hover,
+.btn-brand:disabled {
+  background: #1b3a5c;
+  border-color: #1b3a5c;
+  color: #fff;
+}
+
+.panel-card {
+  border: 0;
+  border-radius: 14px;
+}
+
+.stat-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  color: #fff;
+  flex-shrink: 0;
 }
